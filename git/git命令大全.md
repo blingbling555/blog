@@ -1,3 +1,19 @@
+**取消merge合并**
+
+```
+git merge --abort
+```
+
+**git永久保存账号密码，免去git重复输入账号密码操作**
+
+```
+//配置全局的用户名及邮箱
+git config --global user.name "wangling"
+git config --global user.email "2016644182@qq.com"
+
+git config --global credential.helper store
+```
+
 **远程库相关**
 
 ```
