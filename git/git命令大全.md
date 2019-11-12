@@ -1,3 +1,11 @@
+**切换到远程分支**
+
+```
+git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地起名为dev分支，并切换到本地的dev分支
+
+git checkout -b release/api_management origin/release/api_management  第一个是本地分支名 第二个是远程分支
+```
+
 **取消merge合并**
 
 ```
