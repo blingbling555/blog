@@ -459,3 +459,7 @@ views:{
 [tooltip博客详解2](https://blog.csdn.net/shijue98/article/details/85227549)
 
 [eventLimitClick例子](https://codepen.io/anon/pen/xWLKeK?editors=0110)
+
+[vue里面使用popper.js源码](https://www.jianshu.com/p/859a75a98270)
+
+ [computeStyle.gpuAcceleration](https://popper.js.org/popper-documentation.html#modifiers..computeStyle.gpuAcceleration) 
