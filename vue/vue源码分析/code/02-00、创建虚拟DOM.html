@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root" title="哈哈哈" data-id="你说">
+        <div class="div1">div1</div>
+        <div>div2</div>
+        <div>div3</div>
+        <ul>
+            <li>1</li>
+            <li class="li1">2</li>
+            <li>3</li>
+        </ul>       
+    </div>
+    <div id="a">aa</div>
+    <script>
+     /**
+      * 属性：
+      *     tag:标签类型
+      *     data:标签属性
+      *     value:文本值
+      *     type:节点类型
+      *     
+     */
+    class VNode{
+      constructor(tag,data,value,type) {
+         this.tag = tag&&tag.toLowerCase();
+         this.data = data;
+         this.value = value;
+         this.type = type;
+         this.children = [];
+
+      }
+      appendChild(VNode){
+        this.children.push(VNode);
+      }
+    }
+    // 使用递归来遍历DOM元素来生成虚拟DOM.VUE源码使用栈存储父元素来实现递归生成。
+    function getVNode(node){
+      let nodeType = node.nodeType;
+      let _VNode = null;
+      if(nodeType == 1){ //元素节点
+       let nodeName = node.nodeName;
+       let attrs = node.attributes; //返回所有属性返回的伪数组
+       let _attrObj ={};
+       for(let i=0;i<attrs.length;i++){
+        _attrObj[attrs[i].nodeName] = attrs[i].nodeValue; //attrs[i]是一个属性节点
+       }
+       _VNode = new VNode(nodeName,_attrObj,undefined,nodeType);
+    //    考虑传来来的DOM元素的子元素
+        let childNodes = node.childNodes;
+       for(let i=0;i<childNodes.length;i++){
+        _VNode.appendChild(getVNode(childNodes[i])); //递归
+       }
+      }else if(nodeType == 3){ //
+        _VNode = new VNode(undefined,undefined,node.nodeValue,nodeType)
+      }
+      return _VNode;
+    }
+
+    let root = document.querySelector('#root');
+    let vnode = getVNode(root);
+    function parseVNode(vnode) {
+        let node =null
+       if(vnode.type == 1){ //为元素节点时
+        node = document.createElement(vnode.tag); 
+        let data=vnode.data;
+        Object.keys(data).forEach(key=>{
+            let attrName = key;
+            let attrValue = data[key];
+            node.setAttribute(attrName,attrValue);
+        })
+        for(let i=0;i<vnode.children.length;i++){
+            node.appendChild(parseVNode(vnode.children[i]))
+        }
+        console.log(node)
+        return node
+       }else if(vnode.type == 3){//为文本节点时
+        return document.createTextNode(vnode.value);
+       }
+    }
+    console.log(parseVNode(vnode))
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+     <div id="root">
+         <p>{{name}}</p>
+         <p>{{a.message}}</p>
+     </div>
+     <!-- <div id="test"> </div> -->
+
+     <script>
+        let rkuohao = /\{\{(.+?)\}\}/g;
+        //把{{}}变为数据
+        function compiler(template,data){
+           let childNodes = template.childNodes; //取出子元素,如果是<div></div>，则为空数组
+           for(let i=0;i<childNodes.length;i++){
+               let type=childNodes[i].nodeType; //取到节点类型，1、元素 3、文本节点
+               if(type == 3){
+                // 文本节点，可以判断里面是否有{{}}插值
+                let txt = childNodes[i].nodeValue; //获取文本节点
+                /**
+                 * v:{{msg}}   group:为分组msg,双括号里面的东西
+                 * replace：
+                 *      第一个参数是匹配到的内容{{msg}}
+                 *      第n个参数是匹配到的第n组，也就是双括号里面的东西
+                 * 
+                 * */
+                 txt = txt.replace(rkuohao,((v,group)=>{ 
+                     let path = group.trim(); //双花括号里面的东西
+                    //  let value = data[key];
+                    let value = getValueByPath(data,path)
+                    //  将{{msg}}有值去替换
+                    return value
+                 }))
+                //  替换{{}}为对应的数据
+                 childNodes[i].nodeValue = txt;
+               }else if(type == 1){
+                   //元素节点
+                   compiler(childNodes[i],data)
+               }
+           }
+        }
+        //    
+        function getValueByPath(obj,path) {
+           let paths = path.split('.'); //得到一个数组[xxx,yyy,zzz]
+           let res = obj;
+           let prop;
+           while(prop = paths.shift()){
+               res = res[prop];
+           }
+           return res
+        }
+        function JGVue(options){
+        //   习惯：内部的数据使用下划线开头，只读的以$开头，vue是这样的
+        this._data=options.data;
+        this._el = options.el;
+        // 准备工作（准备模板）
+        this.$el=this._templateDOM = document.querySelector(this._el);
+        this._parent = this._templateDOM.parentNode;
+        // 渲染工作
+        this.render();
+        }
+        // 将模板  即可数据，得到html加到页面中
+        JGVue.prototype.render = function() {
+            this.compiler()
+        }
+        // 编译：将模板与数据结合，得到真正的DOM元素
+        JGVue.prototype.compiler=function(){
+           let realHTMLDOM = this._templateDOM.cloneNode(true); //用模板 拷贝 得到一个准DOM
+           compiler(realHTMLDOM,this._data);//把{{}}替换成数据
+           this.update(realHTMLDOM)
+        }
+        // 将dom元素 放到页面中
+        JGVue.prototype.update=function(real){
+            // 真正vue里面不是这样做的，不能直接替换，如果不存在就渲染，如果以前存在过，就替换更新的部分
+            this._parent.replaceChild(real,document.querySelector(this._el))
+        }
+
+        let app = new JGVue({
+            el:'#root',
+            data: {
+                name:'jim',
+                a: {
+                    message:"info"
+                 }
+            }
+        })
+     </script>
+</body>
+</html>

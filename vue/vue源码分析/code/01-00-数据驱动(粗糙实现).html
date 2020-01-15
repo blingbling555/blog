@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <!-- 
+        思路有很大问题：
+            1、vue使用的虚拟Dom,这里用的真实的Dom
+            2、只考虑到单属性{{name}},而vue当中大量使用层级{{child.name.firstName}}
+            3、代码没有整合
+
+        步骤拆解
+            1. 拿到模板
+            2. 拿到数据（目前是data替换，后面还有computed等）
+            3. 将数据与模板结合，得到的是HTML元素（DOM元素）
+            4. 放到页面中
+     -->
+     <div id="root">
+         <p>{{name}}</p>
+         <p>{{message}}</p>
+     </div>
+     <!-- <div id="test"> </div> -->
+
+     <script>
+        //  匹配正则{{}}
+        let rkuohao = /\{\{(.+?)\}\}/g;
+        //  1、拿到模板
+        let tmpNode = document.querySelector('#root');
+        // 2、数据，现在先随意写一个
+        let data={
+            name:"张三",
+            message:"哈哈哈"
+        }
+        /**
+         * 3、数据与模板先结合
+         *    考虑正则
+         *    template:
+         *      现在是dom元素，(暂时是Dom元素)
+         *      在vue源码里面是字符串（DOM->字符串模板->VNODE->真正的DOM）
+         * */
+        function compiler(template,data){
+           let childNodes = template.childNodes; //取出子元素,如果是<div></div>，则为空数组
+           for(let i=0;i<childNodes.length;i++){
+               let type=childNodes[i].nodeType; //取到节点类型，1、元素 3、文本节点
+               if(type == 3){
+                // 文本节点，可以判断里面是否有{{}}插值
+                let txt = childNodes[i].nodeValue; //获取文本节点
+                /**
+                 * v:{{msg}}   group:为分组msg,双括号里面的东西
+                 * replace：
+                 *      第一个参数是匹配到的内容{{msg}}
+                 *      第n个参数是匹配到的第n组，也就是双括号里面的东西
+                 * 
+                 * */
+                 txt = txt.replace(rkuohao,((v,group)=>{ 
+                     let key = group.trim(); //双花括号里面的东西
+                     let value = data[key];
+                    //  将{{msg}}有值去替换
+                    return value
+                 }))
+                //  替换{{}}为对应的数据
+                 childNodes[i].nodeValue = txt;
+               }else if(type == 1){
+                   //元素节点
+                   compiler(childNodes[i],data)
+               }
+           }
+        }
+        // 注意：这里不应该直接用tmpNode，下次更改vue里面的值时，原来的坑没有了
+        let generateNode = tmpNode.cloneNode(true); //Dom元素可以这么用
+        console.log(tmpNode)
+        compiler(generateNode,data)
+        console.log(generateNode)
+      
+        // 第4部，放到页面当中
+        root.parentNode.replaceChild(generateNode,root);
+     </script>
+</body>
+</html>

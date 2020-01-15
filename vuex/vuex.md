@@ -240,6 +240,98 @@ methods:{
 
 
 
+# 3、模块化
+
+ 当一个项目太大了，应用就会变得相当的臃肿和庞大，为了解决以上问题，Vuex 允许我们将 store 分割成**模块（module）**。每个模块拥有自己的 state、mutation、action、getter 
+
+我对应的模块在modules文件夹里面
+
+```
+我现在的目录结构
+store	
+	index.js
+	modules
+		user
+		auth
+		...
+```
+
+使用
+
+```js
+//store/index.js
+const moduleA = {
+  state: { ... },
+  mutations: { ... },
+  actions: { ... },
+  getters: { ... }
+}
+
+const moduleB = {
+  state: { ... },
+  mutations: { ... },
+  actions: { ... }
+}
+
+const store = new Vuex.Store({
+  modules: {
+    a: moduleA,
+    b: moduleB
+  }
+})
+
+store.state.a // -> moduleA 的状态
+store.state.b // -> moduleB 的状态
+```
+
+可以看出我们以后没添加一个文件，都要在store/index.js里面添加，相当麻烦，下面介绍优化的写法。
+
+### 优化写法
+
+他会自动读取modules下面的js文件
+
+```js
+//store/index.js
+
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+Vue.use(Vuex)
+
+// 自动找到modules文件下面的所有js文件
+// https://webpack.js.org/guides/dependency-management/#requirecontext
+const modulesFiles = require.context('./modules', true, /\.js$/)
+// you do not need `import app from './modules/app'`
+// it will auto require all vuex module from modules file
+const modules = modulesFiles.keys().reduce((modules, modulePath) => {
+  // set './app.js' => 'app'
+  const moduleName = modulePath.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const value = modulesFiles(modulePath)
+  modules[moduleName] = value.default
+
+  return modules
+}, {})
+
+export default new Vuex.Store({
+  modules
+})
+
+```
+
+```js
+//stroe/modules/user.js
+const state = {
+    username:""
+}
+
+export default {
+    namespaced: true,
+    state
+}
+```
+
+
+
 ## 参考链接
 
 [**vuex的详细解析（一）**]( http://www.imooc.com/article/284060 )
