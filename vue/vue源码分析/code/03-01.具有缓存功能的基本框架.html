@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root" title="哈哈哈" data-id="你说">
+        <div class="div1">{{name}}</div>
+        <div>{{value}}</div>
+        <div>{{name}}</div>
+        <ul>
+            <li>{{list}}</li>
+            <li class="li1">{{list}}</li>
+            <li>{{list}}</li>
+        </ul>       
+    </div>
+    <script>
+    // 创建虚拟DOM的构造函数
+    class VNode{
+      constructor(tag,data,value,type) {
+         this.tag = tag&&tag.toLowerCase();
+         this.data = data;
+         this.value = value;
+         this.type = type;
+         this.children = [];
+
+      }
+      appendChild(VNode){
+        this.children.push(VNode);
+      }
+    }
+    //将带有坑的vnode和数据结合得到填充数据Vnode:模拟ast->Vnode的行为
+    let rkuohao = /\{\{(.+?)\}\}/g;
+    // 根据路径访问对象成员
+    function getValueByPath(obj,path) {
+           let paths = path.split('.'); //得到一个数组[xxx,yyy,zzz]
+           let res = obj;
+           let prop;
+           while(prop = paths.shift()){
+               res = res[prop];
+           }
+           return res
+   }
+    function combine(vnode,data){
+       let _type = vnode.type;
+       let _data = vnode.data;
+       let _value = vnode.value;
+       let _tag = vnode.tag;
+       let _children = vnode.children;
+
+       let _vnode = null;
+
+       if(_type === 3){
+        //对文本处理
+        _value = _value.replace(rkuohao,function(_,g){
+             return getValueByPath(data,g.trim())
+        })
+        _vnode = new VNode(_tag,_data,_value,_type)
+       }else if(_type === 1){
+        // 元素节点
+        _vnode = new VNode(_tag,_data,_value,_type);
+        _children.forEach(_subvnode=>_vnode.appendChild(combine(_subvnode,data)))
+       }
+    }
+    // 使用递归来遍历DOM元素来生成虚拟DOM.VUE源码使用栈存储父元素来实现递归生成。（由真实的DOM生成虚拟函数，将这个函数当做compiler函数，假装当做编译为AST）
+    function getVNode(node){
+      let nodeType = node.nodeType;
+      let _VNode = null;
+      if(nodeType == 1){ //元素节点
+       let nodeName = node.nodeName;
+       let attrs = node.attributes; //返回所有属性返回的伪数组
+       let _attrObj ={};
+       for(let i=0;i<attrs.length;i++){
+        _attrObj[attrs[i].nodeName] = attrs[i].nodeValue; //attrs[i]是一个属性节点
+       }
+       _VNode = new VNode(nodeName,_attrObj,undefined,nodeType);
+    //    考虑传来来的DOM元素的子元素
+        let childNodes = node.childNodes;
+       for(let i=0;i<childNodes.length;i++){
+        _VNode.appendChild(getVNode(childNodes[i])); //递归
+       }
+      }else if(nodeType == 3){ //
+        _VNode = new VNode(undefined,undefined,node.nodeValue,nodeType)
+      }
+      return _VNode;
+    }
+   
+   
+    function JGVue(options){
+        this._data = options.data;
+        this._template = document.querySelector(options.el); //在vue中是抽象语法树，在这里是DOM元素
+      
+        this.mount(); //挂载
+    }
+    
+    JGVue.prototype.mount = function() {
+        // 需要提供一个reder方法：生成虚拟DOM（生成新的vnode）
+        this.render = this.createRenderFn()
+       this.mountComponent()
+    }
+
+    JGVue.prototype.mountComponent=function() {
+        // 执行mountComponent()函数
+        let mount = ()=>{
+            this.update(this.render())
+        }
+       mount.call(this); //本质上应该交给watcher来调用，但是还没有讲到这里
+    }
+    /**
+     在真正的vue中使用了二次提交的设计结构：
+        操作 <=> 内存中（第一次）=>真正的数据（第二次）
+        1. 在页面当中的DOM和虚拟DOM是一一对应的关系。（每次在改变数据的时候，都会生成一个新的Vnode）
+        2、先有AST和数据生成VNode(新，render)
+        3、将旧的Vnode和新的VNode比较（diff）,更新（update） 
+    */    
+
+    // 这里是生成render函数，目的是缓存 抽象语法树（我们使用 虚拟DOM来模拟）
+    JGVue.prototype.createRenderFn = function() {
+        let ast = getVNode(this._template);
+        console.log(ast)
+   //   vue：将ast+data=>vnode
+   //   我们：带有坑的Vnode+data=>含有数据的Vnode
+     return function render() {
+         let _tmp = combine(ast,this._data)
+        return _tmp
+     }
+    }
+    // 将虚拟DOM渲染到页面中，diff算法就在里面
+    JGVue.prototype.update = function() {
+//    简化，直接生成HTML,DOM,替换到页面中
+    }
+
+    let app = new JGVue({
+        el:'#root',
+        data:{
+            name:"a",
+            value:"list",
+            list:"ul"
+        }
+    })
+    console.log(app)
+    </script>
+</body>
+</html>

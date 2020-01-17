@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root" title="哈哈哈" data-id="你说">
+        <div class="div1">div1</div>
+        <div>div2</div>
+        <div>div3</div>
+        <ul>
+            <li>1</li>
+            <li class="li1">2</li>
+            <li>3</li>
+        </ul>       
+    </div>
+    <script>
+    function JGVue(options){
+        this._data = options.data;
+        this._template = options.el; //在vue中是抽象语法树，在这里是DOM元素
+      
+        this.mount(); //挂载
+    }
+    
+    JGVue.prototype.mount = function() {
+        // 需要提供一个reder方法：生成虚拟DOM（生成新的vnode）
+        this.render = this.createRenderFn()
+       this.mountComponent()
+    }
+
+    JGVue.prototype.mountComponent=function() {
+        // 执行mountComponent()函数
+        let mount = ()=>{
+            this.update(this.render())
+        }
+       mount.call(this); //本质上应该交给watcher来调用，但是还没有讲到这里
+    }
+    /**
+     在真正的vue中使用了二次提交的设计结构：
+        操作 <=> 内存中（第一次）=>真正的数据（第二次）
+        1. 在页面当中的DOM和虚拟DOM是一一对应的关系。（每次在改变数据的时候，都会生成一个新的Vnode）
+        2、先有AST和数据生成VNode(新，render)
+        3、将旧的Vnode和新的VNode比较（diff）,更新（update） 
+    */    
+
+    // 这里是生成render函数，目的是缓存 抽象语法树（我们使用 虚拟DOM来模拟）
+    JGVue.prototype.createRenderFn = function() {
+   //   vue：将ast+data=>vnode
+   //   我们：带有坑的Vnode+data=>含有数据的Vnode
+     return function render() {
+
+     }
+    }
+    // 将虚拟DOM渲染到页面中，diff算法就在里面
+    JGVue.prototype.update = function() {
+
+    }
+    </script>
+</body>
+</html>
