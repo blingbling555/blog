@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        let data = {
+            name:"张三",
+            age:19,
+            course:[
+                {name:'语文'},
+                {name:'数学'},
+                {name:'英语'},
+            ]
+        }
+       
+        let ARRAY_METHOD = [
+           'push',
+           'pop',
+           'shift',
+           'unshift'
+        ]
+
+    let array_methods=Object.create(Array.prototype);
+    ARRAY_METHOD.forEach(method=>{
+        array_methods[method] = function() {
+            console.log("调用的是拦截的"+method+"方法")
+            for(let i =0;i<arguments.length;i++){
+                reactify(arguments[i])
+            }
+            // 调用原来的方法
+           let res =  Array.prototype[method].apply(this,arguments)
+           //    
+           return res
+        }
+    })
+
+
+       // value就是中间变量，相当于闭包
+       function defineReactive(target,key,value,enumerable){
+           if(typeof value === 'object'&&value!==null&&!Array.isArray(value)){
+            //    非数组的引用类型
+            reactify(value)
+           }
+            Object.defineProperty(target,key,{
+                configurable:true,
+                enumerable:!!enumerable,
+                get(){
+                    console.log(`调用了o的${key}属性`)
+                   return value
+                },
+                set(newVal){
+                    console.log("设置了o的${key}属性")
+
+                  value = newVal;
+                }
+            })
+        }
+
+    //   将对象进行响应式化
+       function reactify(o){
+        Object.keys(o).forEach(attr=>{
+        let value = o[attr];
+        if(Array.isArray(value)) {
+            // 数组
+            value.__proto__ = array_methods; //数组就响应式了
+            value.forEach(member=>{
+                reactify(member)
+            })
+        }else {
+            // 对象或者值类型
+          defineReactive(o,attr,value,true);
+        }
+    })
+
+       } 
+      
+       reactify(data)
+ 
+    /**
+     * 添加字符串报错
+     * data.course = {name:12}重新赋值不会响应式
+     * 
+     * 
+     * 把前面的直接用reactify抱起来
+    */
+    </script>
+</body>
+</html>

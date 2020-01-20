@@ -545,6 +545,30 @@ render作用：是将虚拟DOM转换为真正的DOM,加载页面当中
 
 **处理：可以将 虚拟DOM缓存起来，生成一个函数，函数只需要传入数据，就可以得到真正地 DOM**
 
+
+
+### 1.4、响应式原理
+
+##### 1.4.1、解决问题
+
+- 在使用vue时。赋值属性获得属性都是直接使用vue的实例，比如现在使用需要app._data.msg,我们希望是app.msg
+- 在设计属性值时，页面的数据要更新
+
+```js
+Object.defineProperty('对象'，‘属性名’，{
+                      writable 
+                      configable
+                      enumerable //作用：用来控制柯枚举，是不是能够被for in循环取出来的
+                      set(){} //赋值触发
+                      get(){}//取值触发
+                      
+ })
+```
+
+
+
+
+
 # 参考链接：
 
 视频链接： https://www.bilibili.com/video/av83252401?from=search&seid=617521448022371652 

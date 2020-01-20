@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let data = {
+            name:"张三",
+            age:19,
+            course:[
+                {name:'语文'},
+                {name:'数学'},
+                {name:'英语'},
+            ]
+        }
+       // value就是中间变量，相当于闭包
+       function defineReactive(target,key,value,enumerable){
+           if(typeof value === 'object'&&value!==null&&!Array.isArray(value)){
+            //    非数组的引用类型
+            reactify(value)
+           }
+            Object.defineProperty(target,key,{
+                configurable:true,
+                enumerable:!!enumerable,
+                get(){
+                    console.log(`调用了o的${key}属性`)
+                   return value
+                },
+                set(newVal){
+                    console.log("设置了o的${key}属性")
+
+                  value = newVal;
+                }
+            })
+        }
+
+    //   将对象进行响应式化
+       function reactify(o){
+        Object.keys(o).forEach(attr=>{
+        /**
+         * 判断attr是不是引用类型,如果是引用类型，还是需要调用defineReactive
+         * 1. 数组：将数组里面的元素进行响应式
+         * 
+         * 不是引用类型
+         * 1. 需要用defineReactive变为响应式的
+         * 
+         * 
+         * 注意：所以递归是写在defineReactive里的
+        */
+        let value = o[attr];
+        if(Array.isArray(value)) {
+            // 数组
+            value.forEach(member=>{
+                reactify(member)
+            })
+        }else {
+            // 对象或者值类型
+          defineReactive(o,attr,value,true);
+        }
+            // defineReactive(o,attr,o[attr],true);
+    })
+
+       } 
+       reactify(data)
+
+   /**
+    * 问题：
+    *  对数组元素push和pop没有响应式 
+    * 在veu2中缺陷，数组发生变化，设置length没办法通知（在vue3使用proxyex6语法，解决了这个问题）
+    * push
+    * pop
+    * shift
+    * unshift
+    * reverse
+    * sort
+    * splice
+    * 要做什么事情呢？
+    * 1、 在改变数组的数据时，要发出通知（技巧：如果一个函数已经定义了，但是我们要扩展功能，我们一般的处理办法：）
+    *   1.1 使用一个零时的函数名存储函数
+    *   1.2 重新定义原来的函数
+    *   1.3 定义扩展的功能
+    *   1.4 调用临时的那个函数
+    * 
+    * */ 
+    </script>
+</body>
+</html>

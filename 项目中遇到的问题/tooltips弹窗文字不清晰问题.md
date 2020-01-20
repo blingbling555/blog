@@ -226,22 +226,3 @@ transform:translate(100px,100px) //这种情况下就与宽高没关系
 
 [css设置元素的宽高为整数，为什么有的浏览器解析出来的宽高是小数？]( https://www.zhihu.com/question/48624427 )
 
-# [Blurry text on transform:rotate in Chrome](https://stackoverflow.com/questions/20326220/blurry-text-on-transformrotate-in-chrome)
-
- popperOptions 
-
-var box = document.querySelector('.box'),
-    popper = document.querySelector('.popper'),
-    pIntance = new Popper(box,popper,{
-        placement: 'top',
-        modifiers: {
-            computeStyle: {
-                gpuAcceleration: false,
-                x: 'bottom',
-                y: 'left'
-            }
-        }
-    })
-————————————————
-版权声明：本文为CSDN博主「站在原型链顶端的男人」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
-原文链接：https://blog.csdn.net/jhzhahuaiyu/article/details/90213582

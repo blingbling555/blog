@@ -10,7 +10,7 @@
 
  executor是带有 `resolve` 和 `reject` 两个参数的函数 。Promise构造函数执行时立即调用`executor` 函数， `resolve` 和 `reject` 两个函数作为参数传递给`executor`（executor 函数在Promise构造函数返回所建promise实例对象前被调用）。`resolve` 和 `reject` 函数被调用时，分别将promise的状态改为*fulfilled（*完成）或rejected（失败）。executor 内部通常会执行一些异步操作，一旦异步操作执行完毕(可能成功/失败)，要么调用resolve函数来将promise状态改成*fulfilled*，要么调用`reject` 函数将promise的状态改为rejected。如果在executor函数中抛出一个错误，那么该promise 状态为rejected。executor函数的返回值被忽略。 
 
-简单理解上面一段话，new Promise()里面接收一个函数，这个函数会理解执行，函数里面有两个参数resolve和reject,函数的执行体里面是异步的操作，异步操作有成功有失败
+简单理解上面一段话，new Promise()里面接收一个函数，这个函数会立即执行，函数里面有两个参数resolve和reject,函数的执行体里面是异步的操作，异步操作有成功有失败
 
 - 成功：状态pending->fulfilled,并且用`resolve` 去接收成功的值
 - 失败：状态pending->rejected,并且用`reject` 去接收失败的值

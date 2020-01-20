@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var o = {};
+    // 1、给o提供属性
+    // 方法1：常用的
+        // o.name = '张三';
+    // 方法2：跟上面一种方法是一样的结果
+        // Object.defineProperty(o,'name',{
+        //     configurable:true,
+        //     writable: true,
+        //     enumerable: true,
+        //     name:"张三",
+        // })
+        // console.log(o)
+
+
+    // 2、get set，响应式，在赋值和读取的时候，附带要做一些事情
+    // 如果同时使用get和set，需要一个中间变量去存储
+    let _name;
+    Object.defineProperty(o,'name',{
+            configurable:true,
+            // writable: true, //不能写writable属性，不能与get和set共存
+            enumerable: true,
+            get:function() {
+           // 如果使用o.name来访问，就会调用get方法
+              return _name
+            },
+            set:function(newVal) {
+                _name=newVal
+            }
+    })
+     
+    console.log(o.name) 
+    // 问题：_name暴露在全局作用域中了???
+    // 在vue中使用defineRective(target,key,value,enmerable)
+    
+    </script>
+</body>
+</html>

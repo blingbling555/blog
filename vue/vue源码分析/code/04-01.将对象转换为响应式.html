@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        var o= {
+            name:'jim',
+            age:19,
+            gender: "男"
+        }
+        // value就是中间变量，相当于闭包
+        function defineReactive(target,key,value,enumerable){
+            Object.defineProperty(target,key,{
+                configurable:true,
+                enumerable:!!enumerable,
+                get(){
+                    console.log(`调用了o的${key}属性`)
+                   return value
+                },
+                set(newVal){
+                    console.log("设置了o的${key}属性")
+
+                  value = newVal;
+                }
+            })
+        }
+
+    // 将对象转换为响应式的
+    Object.keys(o).forEach(attr=>{
+        defineReactive(o,attr,o[attr],true);
+    })
+
+
+    // 问题：在实际开发中对象一般有多级的 
+    /**
+     * let o = {
+     * list:[{}],
+     * ads:[{}],
+     * user:{}
+     * }
+     * 这种怎么处理呢？（递归，也可以用队列）
+    */
+
+    </script>
+</body>
+</html>

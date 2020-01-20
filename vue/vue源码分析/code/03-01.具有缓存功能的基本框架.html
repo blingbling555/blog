@@ -44,6 +44,25 @@
            }
            return res
    }
+//  把虚拟dom和data结合起来
+   function parseVNode(vnode) {
+        let node =null
+       if(vnode.type == 1){ //为元素节点时
+        node = document.createElement(vnode.tag); 
+        let data=vnode.data;
+        Object.keys(data).forEach(key=>{
+            let attrName = key;
+            let attrValue = data[key];
+            node.setAttribute(attrName,attrValue);
+        })
+        for(let i=0;i<vnode.children.length;i++){
+            node.appendChild(parseVNode(vnode.children[i]))
+        }
+        return node
+       }else if(vnode.type == 3){//为文本节点时
+        return document.createTextNode(vnode.value);
+       }
+    }
     function combine(vnode,data){
        let _type = vnode.type;
        let _data = vnode.data;
@@ -64,6 +83,8 @@
         _vnode = new VNode(_tag,_data,_value,_type);
         _children.forEach(_subvnode=>_vnode.appendChild(combine(_subvnode,data)))
        }
+
+       return _vnode
     }
     // 使用递归来遍历DOM元素来生成虚拟DOM.VUE源码使用栈存储父元素来实现递归生成。（由真实的DOM生成虚拟函数，将这个函数当做compiler函数，假装当做编译为AST）
     function getVNode(node){
@@ -91,8 +112,10 @@
    
     function JGVue(options){
         this._data = options.data;
-        this._template = document.querySelector(options.el); //在vue中是抽象语法树，在这里是DOM元素
-      
+        let elm = document.querySelector(options.el); //在vue中是抽象语法树，在这里是DOM元素
+        this._template = elm;
+        // 把父元素保存下来
+        this._parent = elm.parentNode;
         this.mount(); //挂载
     }
     
@@ -120,7 +143,6 @@
     // 这里是生成render函数，目的是缓存 抽象语法树（我们使用 虚拟DOM来模拟）
     JGVue.prototype.createRenderFn = function() {
         let ast = getVNode(this._template);
-        console.log(ast)
    //   vue：将ast+data=>vnode
    //   我们：带有坑的Vnode+data=>含有数据的Vnode
      return function render() {
@@ -129,10 +151,14 @@
      }
     }
     // 将虚拟DOM渲染到页面中，diff算法就在里面
-    JGVue.prototype.update = function() {
-//    简化，直接生成HTML,DOM,替换到页面中
+    JGVue.prototype.update = function(vnode) {
+    //  简化，直接生成HTML,DOM,替换到页面中 父元素.replaceChild('新元素'，'旧元素'')
+    let realDOM =parseVNode(vnode)
+    this._parent.replaceChild(realDOM,document.querySelector('#root'))
+    // 这个算法是不负责任的，每次会将页面中的全部替换
+    // 真实的vue是用diff算法实现的
     }
-
+    // debugger
     let app = new JGVue({
         el:'#root',
         data:{
@@ -141,7 +167,6 @@
             list:"ul"
         }
     })
-    console.log(app)
     </script>
 </body>
 </html>
