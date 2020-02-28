@@ -1,18 +1,52 @@
-**切换到远程分支**
+# **log切换到远程分支**
 
 ```
 git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地起名为dev分支，并切换到本地的dev分支
 
 git checkout -b release/api_management origin/release/api_management  第一个是本地分支名 第二个是远程分支
+
+
 ```
 
-**取消merge合并**
+# 拉取远程master覆盖本地master
+
+遇到一个问题，本地的master很久没有更新，突然用git pull 拉取会报错，本地git会判断你本地的文件时最新的，用git reset -- hard HEAD都不行
+
+```
+ git reset --hard origin/master
+```
+
+
+
+# git merge简洁用法
+
+```bask
+一、开发分支（dev）上的代码达到上线的标准后，要合并到 master 分支
+git checkout dev
+git pull
+git checkout master
+git merge dev
+git push -u origin master
+
+二、当master代码改动了，需要更新开发分支（dev）上的代码
+git checkout master 
+git pull 
+git checkout dev
+git merge master 
+git push -u origin dev
+
+https://blog.csdn.net/zl1zl2zl3/article/details/94019526
+```
+
+
+
+# 取消merge合并**
 
 ```
 git merge --abort
 ```
 
-**git永久保存账号密码，免去git重复输入账号密码操作**
+# **git永久保存账号密码，免去git重复输入账号密码操作**
 
 ```
 //配置全局的用户名及邮箱
@@ -22,7 +56,7 @@ git config --global user.email "2016644182@qq.com"
 git config --global credential.helper store
 ```
 
-**远程库相关**
+# **远程库相关**
 
 ```
 git remote add origin git@github.com:blingbling555/blog.git   // 添加远程库
@@ -35,7 +69,7 @@ git push (远程仓库名) (分支名) //推送到远程服务器
 
 
 
-**分支相关**
+# **分支相关**
 
 ```
 创建
@@ -65,7 +99,7 @@ git branch --set-upstream-to <branch-name> origin/<branch-name>//如果git pull�
 
 
 
-**别名**
+# **别名**
 
 ```
 $ git config --global alias.co checkout
@@ -89,7 +123,7 @@ $ git config --global alias.st status
 
 
 
-**版本回退**
+# **版本回退**
 
 ```
 （1）git reset --hard commit_id，HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭
@@ -102,7 +136,7 @@ $ git config --global alias.st status
 
 
 
-**查看本地版本库**
+# **查看本地版本库**
 
 ```
 git log --pretty=oneline ;  commit信息 
@@ -110,7 +144,7 @@ git reflog
 git log --oneline -3 最近三次commit信息
 ```
 
-**撤销**
+# **撤销**
 
 ```
 git checkout -- file 丢弃工作区
@@ -118,7 +152,7 @@ git checkout -- file 丢弃工作区
 当你不但改乱了工作区某个文件的内容，还添加到了暂存区时，想丢弃修改。两步，第一步用命令git reset HEAD <file>，就回到了场景1，第二步按场景1操作。
 ```
 
-**删除**
+# **删除**
 
 ```
 git rm <file> 删除
