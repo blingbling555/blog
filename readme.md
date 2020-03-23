@@ -7,5 +7,5 @@
 ## 2、博客内容
 
 - javascript
-  - ✔ [promise的基本使用](js/promise.md)
+  - ✔ [es6-promise,async,await](js/promise.md)
 

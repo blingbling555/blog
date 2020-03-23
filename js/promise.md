@@ -22,6 +22,8 @@ new Promise( function(resolve, reject) {...} /* executor */  );
 
 简单例子
 
+> then里面接收两个函数，成功则执行第一个里面的函数，失败执行第二个回调函数
+
 ```js
  let p1=new Promise(function(resolve,reject){
            setTimeout(function(){
@@ -102,7 +104,7 @@ Promise.resolve()
 
 ```js
 const p1=Promise.resolve(11); //跟上面是一样的
-p2.then(value=>{console.log(value)})
+p1.then(value=>{console.log(value)})
 ```
 
 
@@ -113,7 +115,7 @@ p2.then(value=>{console.log(value)})
 
 ```js
 const p3=Promise.reject(33)
-p2.then(null,reason=>{console.log(reason)})
+p3.then(null,reason=>{console.log(reason)})
 ```
 
 
@@ -122,10 +124,10 @@ p2.then(null,reason=>{console.log(reason)})
 
 Promise.All():发送了多个请求，只有全部成功才走成功的处理，只要其中有一个失败就失败，这个返回的是p2的原因
 
-- 失败原因，走第一个失败的原因
+- 失败原因，走第一个失败的原因,这里p2是第一个失败的，所以reason为22
 
 ```js
- const p1 = Promise.resolve(11); //跟上面是一样的
+        const p1 = Promise.resolve(11); //跟上面是一样的
         const p2 = Promise.reject(22)
         const p3 = Promise.reject(33)
     
@@ -133,7 +135,7 @@ Promise.All():发送了多个请求，只有全部成功才走成功的处理，
         pAll.then(
             value => {},
             reason => {
-                console.log(reason)
+                console.log(reason) //22
             }
         )
 ```
@@ -158,17 +160,19 @@ Promise.All():发送了多个请求，只有全部成功才走成功的处理，
 
 ### 1.6、Promise.race()
 
+ **`Promise.race(iterable)`** 方法返回一个 promise，一旦迭代器中的某个promise解决或拒绝，返回的 promise就会解决或拒绝。 
+
 多个异步任务，谁先执行完就用谁的,可以用setTimeout延迟去模拟，这里我就不试了
 
 ```js
-const p1 = Promise.resolve(11); //跟上面是一样的
+        const p1 = Promise.resolve(11); //跟上面是一样的
         const p2 = Promise.resolve(22)
         const p3 = Promise.resolve(33)
     
         const pRace = Promise.race([p1, p2, p3])
         pRace.then(
             value => {
-                console.log(value)
+                console.log(value) //11 走的成功
             }
         )
 ```
@@ -176,17 +180,17 @@ const p1 = Promise.resolve(11); //跟上面是一样的
 如果第一个执行完是一个失败的，那就走失败
 
 ```js
- const p1 = Promise.reject(11); //跟上面是一样的
+        const p1 = Promise.reject(11); //跟上面是一样的
         const p2 = Promise.resolve(22)
         const p3 = Promise.resolve(33)
     
         const pRace = Promise.race([ p1,p2, p3])
         pRace.then(
             value => {
-                console.log(value)
+                console.log(value) 
             },
             reason=>{
-                console.log(reason)
+                console.log(reason) //11 走的 失败
             }
         )
 ```
@@ -287,6 +291,8 @@ new Promise((resolve,reject)=>{
         //第二次undefined
 ```
 
+
+
 ```js
  new Promise((resolve,reject)=>{
             setTimeout(function(){
@@ -297,6 +303,7 @@ new Promise((resolve,reject)=>{
             console.log("成功第一次"+value)
         },reason=>{
          console.log("失败第一次"+reason)
+         //throw new Error('出错了')
         })
         .then(value=>{
             console.log("成功第二次"+value)
