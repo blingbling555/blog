@@ -9,13 +9,12 @@
 ## 2、博客内容
 
 - [javascript](js/jsREADME.md)
-
+- [js原型和原型链深入理解](js/js重难点知识/原型和原型链深入理解.md)
 - 游览器
 
   - ✔[DOM](游览器/DOM/readme.md)
 
   - [BOM](游览器/BOM/bomReadme.md)
+- [vue](vue/README.md)
 
-    ​
-
-
+- 面试题
