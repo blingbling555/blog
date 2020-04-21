@@ -13,8 +13,10 @@
 - 游览器
 
   - ✔[DOM](游览器/DOM/readme.md)
-
-  - [BOM](游览器/BOM/bomReadme.md)
+- [BOM](游览器/BOM/bomReadme.md)
+  - HTTP
+    - [关于axios发送post请求返回400状态码【请求失败，code非200的】的问题，如何接收到json格式](./游览器/HTTP/关于axios发送post请求返回400状态码请求失败，code非200的的问题，如何接收到json格式.md)
 - [vue](vue/README.md)
 
 - 面试题
+
