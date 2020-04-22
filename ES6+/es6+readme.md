@@ -122,6 +122,7 @@ for
 
 ```js
 //forEach与for相比，不支持break和continue
+//可以用return来跳出本次循环
 ```
 
 ##### every
@@ -207,7 +208,7 @@ Array.from(arr) //[a,b]
 
 伪数组不能调用数组的方法，比如不能用forEach
 
-伪数组有哪些：arguments(es6废弃使用),NOdeList，set
+伪数组有哪些：arguments(es6废弃使用),NOdeList
 
 ```js
 //es5
@@ -255,7 +256,7 @@ Array.of(3).length // 1
 
 #### 5、Array.fill填充
 
-填充空数组比较好
+填充空数组比较好，可以填充数组的某一段，第二个参数是开始下标。第三个是结束下标
 
 ```js
 ['a', 'b', 'c'].fill(7) // [7, 7, 7]
@@ -339,6 +340,24 @@ let person = {name: 'John', age: 20};
 [1, 5, 10, 15].findIndex(function(value, index, arr) {
   return value > 9;
 }) // 2
+```
+
+#### 9、Array.includes(es7)
+
+语法
+
+```js
+arr.includes(valueToFind[, fromIndex])
+/*
+ @params: valueToFind 需要查找的元素值。
+ @params: fromIndex:从fromIndex 索引处开始查找 valueToFind。如果为负值，则按升序从 array.length + fromIndex 的索引开始搜 （即使从末尾开始往前跳 fromIndex 的绝对值个索引，然后往后搜寻）。默认为 0。
+ @return boolean,找到true,没找到false
+*/
+```
+
+```js
+[1,2,3,4,5].includes(3) //true
+[1,2,3,4,5].includes(6) //false
 ```
 
 
@@ -618,32 +637,6 @@ sum(10,2,3,4) //29
 
 
 
-### 4、object相关知识点
-
-#### 1、简写
-
-```js
-//es5
-let name = "wangling"
-let obj = {
-    x: x，
-    fun: function(){}
-}
-obj[name] = "person"
-
-
-//es6
-let name = "wangling"
-let obj = {
-    x, //相同的可以省略
-    [name]: 'person', //动态的变量可以直接写在里面
-    fun() {}, //省略function
-    * hello() {} //可以添加异步的函数
-}
-```
-
-
-
 ### 5、Set
 
 #### 1、创建
@@ -875,4 +868,566 @@ for(let [key, value] of map) {
 console.log(value,key) //2 1, 2 3
 }
 ```
+
+
+
+### 7、Object扩展
+
+```js
+//es5
+let name = "wangling"
+let obj = {
+    x: x，
+    fun: function(){}
+}
+obj[name] = "person"
+
+
+//es6
+let name = "wangling"
+let obj = {
+    x, //相同的可以省略
+    [name]: 'person', //动态的变量可以直接写在里面
+    fun() {}, //省略function
+    * hello() {} //可以添加异步的函数
+}
+```
+
+#### 1、Object.assign(对象拷贝)
+
+把一个对象复制到另一个对象
+
+语法：
+
+```js
+Object.assign(target, ...sources)
+/*
+@return: 新数组
+@desc: 如果目标对象中的属性具有相同的键，则属性将被源对象中的属性覆盖。后面的源对象的属性将类似地覆盖前面的源对象的属性。
+*/
+```
+
+```js
+//案列1
+const a = {n: 1};
+const b = {m: 1};
+const c = Object.assign({}, a, b);  //{n: 1, m: 1}
+
+//案列2:目标对象自身也会改变
+const target = { a: 1, b: 2 };
+const source = { b: 4, c: 5 };
+const returnedTarget = Object.assign(target, source);
+console.log(target);// expected output: Object { a: 1, b: 4, c: 5 }
+console.log(returnedTarget);// expected output: Object { a: 1, b: 4, c: 5 }
+
+//合并具有相同属性的对象
+const o1 = { a: 1, b: 1, c: 1 };
+const o2 = { b: 2, c: 2 };
+const o3 = { c: 3 };
+
+const obj = Object.assign({}, o1, o2, o3);
+console.log(obj); // { a: 1, b: 2, c: 3 }
+
+//里面是浅拷贝，是浅拷贝的漏洞，数据
+const o1 = {a: 1, b: {c: 1}};
+const target = {a: 1, b: {c: 2, d: 3}};
+Object.assign(target, o1); 
+console.log(target) //{a: 1, b: {c: 1}};
+```
+
+##### Object.assign是深拷贝还是浅拷贝
+
+```js
+let obj1 = {a: 1, b: {c: 2}}
+let obj2 = Object.assign({}, obj1);
+console.log(obj2.b.c) //2
+obj1.b.c = 3;
+console.log(obj2.b.c) //3,这里可以看出来是浅拷贝
+```
+
+##### 思考题
+
+> 思考1、如果目标对象传入的是undefined和null将会怎样呢？
+
+
+
+> 思考2、如如果原对象的参数是undefined和null将会怎样呢？
+
+
+
+> 思考3、如果目标对象是个嵌套的对象，子对象的属性会被覆盖吗？
+
+
+
+#### 2、Object.defineProperty（es5,后面看vue源码再来研究）
+
+##### 语法
+
+```js
+Object.defineProperty(obj, prop, descriptor)
+/*
+@params: obj 要定义属性的对象。(边界化，目前尝试了数组和对象可以，其他比如说数字会报错)
+@params:prop 要定义或修改的属性的名称或 Symbol 。
+@params:descriptor 要定义或修改的属性描述符。
+@retrun 被传递给函数的对象。
+*/
+```
+
+##### 传入第一个参数不是对象
+
+报错
+
+```js
+//数字，undefined一样的结果
+const object1 = 123;
+
+Object.defineProperty(object1, 'property1', {
+  value: 42,
+  writable: false
+});
+
+//VM401:3 Uncaught TypeError: Object.defineProperty called on non-object
+
+//数组
+const object1 = [1,2]
+
+Object.defineProperty(object1, 'property1', {
+  value: 42,
+  writable: false
+}); //[1, 2, property1: 42]
+```
+
+
+
+### 8、String扩展
+
+#### 标签模板
+
+[https://es6.ruanyifeng.com/#docs/string#%E6%A8%A1%E6%9D%BF%E5%AD%97%E7%AC%A6%E4%B8%B2](https://es6.ruanyifeng.com/#docs/string#模板字符串)
+
+### 9、变量的解构赋值
+
+#### 1、数组的结构赋值
+
+不仅可以赋值变量，也可以是对象的属性
+
+```js
+let arr = ['hello', 'world'];
+let [firstName, lastName] = arr; //firstName = hello  lastName = world
+
+//如果数组有4项，我想取第一项和最后一项呢,怎么跳过呢？
+let namelist = ['wangling', 'zhangdong', 'zhangziheng', 'haha'];
+let [name,,,desc] = namelist; //name = wangling  desc=haha
+
+```
+
+##### 批量给对象修改值
+
+```js
+let user = {name: 's', surname: 't'}; //必须加分号
+[user.name, user.surname] = [1, 2];
+console.log(user) //{name: 1, surname: 2}
+```
+
+##### 遍历对象，可以取到任何属性和值
+
+```js
+let user = {name: 's', surname: 't'};
+console.log(Object.entries(user)) //[["name", "s"],["surname","t"]]
+for(let [key, value] of Object.entries(user)){
+    console.log(key, value) //name s ,surname t
+}
+```
+
+##### 余下参数数组接收
+
+```js
+//保存剩余的参数，注意有个细节会丢失数据，，，中间一个2是没有保留下来的，数据量不够的话 last为[]
+let arr = [1,2,3,4,5,6,7,8];
+let [x,,y,...last] = arr;//x=1 y=3 last=[4, 5, 6, 7, 8]
+```
+
+##### 解构不成功，变量的值就等于undefined。
+
+```js
+let [x, y, ...z] = ['a'];
+x // "a"
+y // undefined
+z // []
+```
+
+##### 报错
+
+如果等号的右边不是数组（或者严格地说，不是可遍历的结构，参见《Iterator》一章），那么将会报错。
+
+```js
+// 报错
+let [foo] = 1;
+let [foo] = false;
+let [foo] = NaN;
+let [foo] = undefined;
+let [foo] = null;
+let [foo] = {};
+```
+
+##### set也可以解构赋值
+
+```js
+let [x, y, z] = new Set(['a', 'b', 'c']);
+x // "a"
+```
+
+##### 解构赋值默认值
+
+> 注意如果解构的值是undefined，就用默认值
+
+解构赋值允许指定默认值。如果解构不成功，返回默认值
+
+```js
+let [foo = true] = [];
+foo // true
+
+let [x, y = 'b'] = ['a']; // x='a', y='b'
+let [x, y = 'b'] = ['a', undefined]; // x='a', y='b'
+
+let [x = 1] = [undefined];
+x // 1
+
+let [x = 1] = [null];
+x // null
+```
+
+#### 2、对象的解构赋值
+
+> 注意
+>
+> 跟数组的区别：这里是花括号
+>
+> 解构的时候需要跟对象的属性一样
+
+```js
+let option = {
+title: 'menu',
+width: 100,
+height: 200
+}
+let {title, width, height} = option; //title='menu' width=100 height=200
+```
+
+##### 解构变量重命名
+
+现在需要解构title,变量名不叫title
+
+就不能简写了
+
+```js
+let option = {
+    title: "哥伦布"
+}
+
+let {title: title2} = option 
+console.log(title2) //"哥伦布"
+console.log(title) //title is not defined
+```
+
+##### 设置默认值
+
+```js
+let option = {
+    title: "哥伦布"
+}
+
+//找到option.name,如果option.name = undefined ,就设置100的默认值
+let {title: title2, name :userName= 100} = option 
+console.log(title2) //"哥伦布
+console.log(userName) //100
+```
+
+##### 余下变量
+
+```js
+let option = {
+title: 'menu',
+width: 100,
+height: 200
+}
+let {title, ...last} = option; 
+console.log(title, last) //menu {width: 100, height: 200}
+```
+
+##### 多层嵌套取值
+
+注意：取Cake值时，是解构数组的
+
+```js
+let option = {
+ size: {
+  width: 100,
+  height: 200
+ },
+ items: ['Cake', 'Dount'],
+ extra: true
+}
+let { size: {width: width2, height},items:[item1]} = option
+console.log(width2,height,item1) //100 200 "Cake"
+
+```
+
+##### 数组使用对象的方法解构
+
+```js
+let arr = [1, 2, 3];
+let {0 : first, [arr.length - 1] : last} = arr;
+first // 1
+last // 3
+```
+
+##### 注意事项
+
+```js
+// 错误的写法
+let x;
+{x} = {x: 1};
+// SyntaxError: syntax error
+
+// 正确的写法
+let x;
+({x} = {x: 1});
+```
+
+#### 3、函数的解构赋值
+
+函数的参数也可以使用解构赋值。
+
+看着就是数组的解构赋值
+
+```js
+function add([x, y]){
+  return x + y;
+}
+
+add([1, 2]); // 3
+```
+
+#### 4、用途
+
+##### 交换变量的值
+
+```js
+let x = 1;
+let y = 2;
+
+[x, y] = [y, x];
+console.log(x,y) //2,1
+```
+
+##### 从函数中返回多个值
+
+```js
+// 返回一个数组
+
+function example() {
+  return [1, 2, 3];
+}
+let [a, b, c] = example();
+
+// 返回一个对象
+
+function example() {
+  return {
+    foo: 1,
+    bar: 2
+  };
+}
+let { foo, bar } = example();
+```
+
+##### **函数参数的定义**
+
+```js
+// 参数是一组有次序的值
+function f([x, y, z]) { ... }
+f([1, 2, 3]);
+
+// 参数是一组无次序的值
+function f({x, y, z}) { ... }
+f({z: 3, y: 2, x: 1});
+```
+
+##### 提取JSON数据
+
+```js
+let jsonData = {
+  id: 42,
+  status: "OK",
+  data: [867, 5309]
+};
+
+let { id, status, data: number } = jsonData;
+
+console.log(id, status, number);
+// 42, "OK", [867, 5309]
+```
+
+##### **输入模块的指定方法**
+
+```js
+const { SourceMapConsumer, SourceNode } = require("source-map");
+```
+
+### 10、promise
+
+
+
+### 11、Reflece(反射机制暂时不看)
+
+
+
+### 12、proxy(后面重新整理)
+
+##### 基本使用
+
+代理->中介
+
+```js
+let o = {
+ name: 'xiaoming',
+ price: 190
+}
+
+let d = new Proxy(o, {
+  get(target, key) {
+      if(key === 'price' ) {
+        retrun target[key]+20
+      }else {
+        return target[key]
+      }
+  }
+})
+console.log(d.price) //210
+```
+
+##### 使用场景1（只读场景）
+
+只读不能修改
+
+从服务端拿到数据进行排序，这个时候我想访问原数组改怎么办？
+
+```js
+//es5
+let o = {
+ name: 'xiaoming',
+ price: 190
+}
+
+for(let [key] of Object.edtries(o)) {
+    Object.defineProperty(o, key, {
+        writable: false
+    })
+}
+d.price = 300;
+console.log(d.price, d.name) //190 "xiaoming"
+
+//es6
+let o = {
+ name: 'xiaoming',
+ price: 190
+}
+
+let d = new Proxy(o, {
+  get(target, key) {
+     return target[key]
+  },
+  set(target, key, value) {
+      return false
+  }
+})
+
+d.price = 300;
+console.log(d.price, d.name) //190 "xiaoming"
+```
+
+##### 使用场景2(检验)
+
+- 拦截无效的属性
+- 价格大于300拦截
+
+```js
+let o = {
+ name: 'xiaoming',
+ price: 190
+}
+let d = new Proxy(o, {
+    get(target, key) {
+        return target[key] || ''
+    },
+    set(target, key, value) {
+        if (Reflect.has(target,key)) {
+            if(value > 300) {
+                return fasle
+            }else {
+                target[key] = value
+            }
+        }
+    }
+})
+```
+
+监听错误
+
+```js
+window.addEventListener('error', (e) => {
+console.log(e.message)
+ report('./')
+},true)
+let o = {
+ name: 'xiaoming',
+ price: 190
+}
+let d = new Proxy(o, {
+    get(target, key) {
+        return target[key] || ''
+    },
+    set(target, key, value) {
+        if (Reflect.has(target,key)) {
+            if(value > 300) {
+                throw new TypeError('price exceed 300')
+            }else {
+                target[key] = value
+            }
+        }
+    }
+})
+```
+
+### 13、async_Await(es8，后面扩展)
+
+加了async属性返回一个promise
+
+```js
+async function fun1() {return 7}
+console.log(fun1()) //Promise {<resolved>: 7}
+```
+
+怎么得到返回值呢？
+
+```js
+async function fun1() {return 7}
+fun1().then((res) => {
+  console.log(res) //7
+})
+```
+
+await一个promise可以直接得到值，不用.then
+
+```js
+async function fun1() {return 7}
+
+async function fun2() {
+  let res = await fun1();
+  console.log(res) //7
+}
+```
+
+
 
