@@ -1,3 +1,17 @@
+# 显示中文路径
+
+```
+git config --global core.quotepath false
+```
+
+# 彻底删除大文件
+
+```
+git filter-branch --index-filter 'git rm -rf --cached --ignore-unmatch 书籍/'
+```
+
+
+
 #  分支a想合并3.7.2的代码
 
 你应该是先切到3.7.2，拉最新代码，然后切到你的分支，把3.7.2merge到你的分支，解决冲突，解决完以后向3.7.2发起mr 
