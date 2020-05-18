@@ -97,6 +97,110 @@ var foo: ?string = null
 
 
 
+# 3、打草稿
+
+
+
+### 3.1、{{msg}}怎么渲染到页面的
+
+##### 构造函数vue
+
+```js
+//src\core\instance\index.js
+function Vue (options) {
+  if (process.env.NODE_ENV !== 'production' &&
+    !(this instanceof Vue)
+  ) {
+    warn('Vue is a constructor and should be called with the `new` keyword')
+  }
+  this._init(options)
+}
+```
+
+**_init**:定义uid，合并options到`$options`上（可以通过`$options.el`访问到el，`$options.data`访问到data）,初始生命周期，事件等一堆的初始化
+
+##### 初始化data,props，methods
+
+```js
+//src\core\instance\state.js
+function initData (vm: Component) {
+  let data = vm.$options.data
+  data = vm._data = typeof data === 'function'
+    ? getData(data, vm)
+    : data || {}
+  if (!isPlainObject(data)) {
+    data = {}
+    process.env.NODE_ENV !== 'production' && warn(
+      'data functions should return an object:\n' +
+      'https://vuejs.org/v2/guide/components.html#data-Must-Be-a-Function',
+      vm
+    )
+  }
+  // proxy data on instance
+  const keys = Object.keys(data)
+  const props = vm.$options.props
+  const methods = vm.$options.methods
+  let i = keys.length
+  while (i--) {
+    const key = keys[i]
+    if (process.env.NODE_ENV !== 'production') {
+      if (methods && hasOwn(methods, key)) {
+        warn(
+          `Method "${key}" has already been defined as a data property.`,
+          vm
+        )
+      }
+    }
+    if (props && hasOwn(props, key)) {
+      process.env.NODE_ENV !== 'production' && warn(
+        `The data property "${key}" is already declared as a prop. ` +
+        `Use prop default value instead.`,
+        vm
+      )
+    } else if (!isReserved(key)) {
+      proxy(vm, `_data`, key)
+    }
+  }
+  // observe data
+  observe(data, true /* asRootData */)
+}
+
+export function proxy (target: Object, sourceKey: string, key: string) {
+  sharedPropertyDefinition.get = function proxyGetter () {
+    return this[sourceKey][key]
+  }
+  sharedPropertyDefinition.set = function proxySetter (val) {
+    this[sourceKey][key] = val
+  }
+  Object.defineProperty(target, key, sharedPropertyDefinition)
+}
+```
+
+**proxy**：代理 比如访问this.msg 其实是代理到this._data.msg,注意不要访问this_data,一般下划线就是私有的
+
+### 挂载vm.$mount
+
+```js
+//src\platforms\web\entry-runtime-with-compiler.js
+
+const mount = Vue.prototype.$mount
+Vue.prototype.$mount = function (
+  el?: string | Element,
+  hydrating?: boolean
+): Component {
+  el = el && query(el)
+
+ ...
+ ...
+  return mount.call(this, el, hydrating)
+}
+
+```
+
+`const mount = Vue.prototype.$mount`: 在这里定义的 `import Vue from './runtime/index'`
+
+![image-20200512092604442](assets/image-20200512092604442.png)
+
 
 
 # 参考文档

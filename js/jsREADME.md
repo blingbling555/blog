@@ -32,21 +32,62 @@
 ### ✘Date
 
 
+# Function
 
-# [Symbol](symbol基础知识.md)
+### *`Function.prototype.call()`*
 
-- 概述
-- Symbol基本使用
-- Symbol的常用技巧
-- 属性名的遍历
-  - `Object.getOwnPropertySymbols()`：返回该对象所有属性名为Symbols的数组
-  - `Reflect.ownKeys()`：返回对象的所有属性，包括Symbols
-- `Symbol.for()`：使用Symbol.for会在系统中将Symbol登记
-- `Symbol.keyFor()`：根据使用`Symbol.for`登记的Symbol返回描述，如果找不到返回undefined 
+> **注意：**该方法的语法和作用与 [`apply()`](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/apply) 方法类似，只有一个区别，就是 `call()` 方法接受的是**一个参数列表**，而 `apply()` 方法接受的是**一个包含多个参数的数组**。
 
-# Set
+##### 手写实现call
+
+>基本实现原理：
+>
+>1. 将函数设为对象的属性（第一个参数传进来的对象，如果不传就是window）
+>2. 执行这个函数(在call2函数里面的this就是这个函数)
+>3. 删除这个函数（严格说是删除属性 delete context.fn）
+>
+>
+
+```js
+//es5版本
+Function.prototype.call2 = function (context) {
+    var context = context || window;
+    //这个this,就是谁调用的这个函数 this就是谁,一般就是函数本身，不然怎么执行
+    context.fn = this;
+
+    var args = [];
+    for(var i = 1, len = arguments.length; i < len; i++) {
+        args.push('arguments[' + i + ']');
+    }
+
+    var result = eval('context.fn(' + args +')');
+
+    delete context.fn
+    return result;
+}
+
+//es6版本
+Function.prototype.call2 = function(context) {
+    var context = context || window
+    context.fn = this // this 也就是调用call的函数
+    var args = [...arguments].slice(1)
+    var result = context.fn(...args)
+    delete context.fn
+    return result
+}
+```
+
+[call手写视频教程](https://www.bilibili.com/video/BV1zE411K7gd)
+
+[运江大神手写系列](https://github.com/heyunjiang/Blog/blob/master/es/深入js-一些功能模拟实现.md)
+
+[使用模拟实现的方式探究call 和 apply 的原理](https://www.jianshu.com/p/92b48caee4b2)
+
+# Array
 
 
+
+# Object
 
 # 参考链接
 

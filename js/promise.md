@@ -465,7 +465,170 @@ new Promise((resolve, reject) => {
         })
 ```
 
+
+
+
+
+### 1.8、Promise.prototype.then() 
+
+接收两个参数：
+
+```js
+p.then(onFulfilled[, onRejected]);
+
+p.then(value => {
+  // fulfillment
+}, reason => {
+  // rejection
+});
+```
+
+>  返回了一个值，那么 `then` 返回的 Promise 将会成为接受状态，并且将返回的值作为接受状态的回调函数的参数值。 
+
+```js
+var p1 = Promise.resolve(33); 
+p1.then(value => {
+    console.log(value, "成功") //33 "成功"
+}, reason => {
+    console.log(reason, "失败")
+})
+
+/*
+@return 新的promise
+Promise {<resolved>: undefined}
+__proto__: Promise
+[[PromiseStatus]]: "resolved"
+[[PromiseValue]]: undefined
+*/
+```
+
+>  抛出一个错误，那么 `then` 返回的 Promise 将会成为拒绝状态，并且将抛出的错误作为拒绝状态的回调函数的参数值。 
+
+```js
+var p1 = Promise.reject(33); 
+p1.then(value => {
+    console.log(value, "成功") 
+}, reason => {
+    console.log(reason, "失败") 
+})
+
+//33 "失败"
+/*
+Promise {<resolved>: undefined}
+__proto__: Promise
+[[PromiseStatus]]: "resolved"
+[[PromiseValue]]: undefined
+*/
+
+```
+
+>  返回一个已经是拒绝状态的 Promise，那么 `then` 返回的 Promise 也会成为拒绝状态，并且将那个 Promise 的拒绝状态的回调函数的参数值作为该被返回的Promise的拒绝状态回调函数的参数值。 
+
+```js
+const p1 = new Promise(function (resolve, reject) {
+  reject(new Error('fail'))
+})
+
+const p2 = new Promise(function (resolve, reject) {
+  resolve(p1)
+})
+
+p2.then(result => console.log(result, "成功"))
+  .catch(error => console.log(error, "失敗")) //fail 失败
+```
+
+>  返回一个已经是接受状态的 Promise，那么 `then` 返回的 Promise 也会成为接受状态，并且将那个 Promise 的接受状态的回调函数的参数值作为该被返回的Promise的接受状态回调函数的参数值。 
+
+```js
+const p1 = new Promise(function (resolve, reject) {
+  resolve(33)
+})
+
+const p2 = new Promise(function (resolve, reject) {
+  resolve(p1)
+})
+
+p2.then(result => console.log(result, "成功")) //33,成功
+  .catch(error => console.log(error, "失敗")) 
+```
+
+>  返回一个未定状态（`pending`）的 Promise，那么 `then` 返回 Promise 的状态也是未定的，并且它的终态与那个 Promise 的终态相同；同时，它变为终态时调用的回调函数参数与那个 Promise 变为终态时的回调函数的参数是相同的。 
+
+```js
+const p1 = new Promise(function (resolve, reject) {
+})
+
+const p2 = new Promise(function (resolve, reject) {
+  resolve(p1)
+})
+
+p2.then(result => console.log(result, "成功")) //33,成功
+  .catch(error => console.log(error, "失敗")) 
+```
+
+> 一般来说，不要在`then()`方法里面定义 Reject 状态的回调函数（即`then`的第二个参数），总是使用`catch`方法。 
+
+```javascript
+// bad
+promise
+  .then(function(data) {
+    // success
+  }, function(err) {
+    // error
+  });
+
+// good
+promise
+  .then(function(data) { //cb
+    // success
+  })
+  .catch(function(err) {
+    // error
+  });
+```
+
+### 1.9、Promise.prototype.catch()
+
+ `Promise.prototype.catch()`方法是`.then(null, rejection)`或`.then(undefined, rejection)`的别名，用于指定发生错误时的回调函数。 
+
+
+
+### 2.0、Promise.prototype.finally()
+
+ `finally()`方法用于指定不管 Promise 对象最后状态如何，都会执行的操作。
+
+比如在项目vuex发送请求，在请求前，加loading效果，在请求完不管成功或者都需要关闭，这时候就可以用finally()
+
 # 2、async和await
+
+### 简单解释下async和await
+
+加了async属性返回一个promise
+
+```js
+async function fun1() {return 7}
+console.log(fun1()) //Promise {<resolved>: 7}
+```
+
+怎么得到返回值呢？
+
+```js
+async function fun1() {return 7}
+fun1().then((res) => {
+  console.log(res) //7
+})
+```
+
+await一个promise可以直接得到值，不用.then
+
+```js
+async function fun1() {return 7}
+
+async function fun2() {
+  let res = await fun1();
+  console.log(res) //7
+}
+```
 
 ### 2.1、async
 
@@ -536,8 +699,6 @@ fn1().then(value=>{
 > 　await必须写在async函数中，但是async函数中可以没有await
 >
 > 　如果await的promise失败了，就会抛出异常，需要通过try...catch来捕获处理
-
-
 
 
 

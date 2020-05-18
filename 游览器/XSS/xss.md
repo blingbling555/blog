@@ -46,7 +46,19 @@ XSS攻击通常指的是通过利用网页开发时留下的漏洞，通过巧�
 
 - 根据业务场景对症下药
 
+# 常见代码攻击
 
+### 避免xss攻击
+
+```html
+<input onfocus="alert(1)" autofocus />
+<img src onerror="alert(1)" />
+<svg onload="alert(1)" />
+<script>alert(1)</script>
+<a href="javascript:alert(1)">clickme</a>
+```
+
+![image-20200427161823739](assets/image-20200427161823739.png)
 
 # 存储型XSS
 
@@ -106,4 +118,24 @@ ad">
 攻击者在url中插入xss代码,前端页面直接从url中获取xss代码并且输出到页面，导致xss代码的执行，攻击者将带有xss代码的url发送给用户，用户打开后受到xss攻击
 
 ![image-20200426212434438](assets/image-20200426212434438.png)
+
+
+
+
+
+# 参考链接
+
+[web安全之 XSS攻击与防御视频教程](https://www.bilibili.com/video/BV1R4411u7Rk?from=search&seid=6438445546823214585)
+
+[美团xss博客](https://www.freebuf.com/articles/web/185654.html)
+
+[xss刷题](https://xss.haozi.me/#/0x00)
+
+https://github.com/haozi/xss-demo
+
+[xss库](https://www.npmjs.com/package/sanitize-html)
+
+推荐安全书籍：**白帽子讲web安全**，**XSS跨站脚本攻击剖析与防御**,web前端黑客技术解密
+
+[360公司前端博客，很多http相关博文](https://imququ.com/)
 
