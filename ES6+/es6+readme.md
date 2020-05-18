@@ -1,24 +1,3 @@
-<<<<<<< HEAD
-
-=======
-# 1、环境准备
-
-由于ES6-10,有些代码游览器不支持
-
-```bash
-git clone https://github.com/cucygh/es-cli.git
-cd es-cli
-npm install
-npm start
-```
-
-如果启动没有任何异常的话，直接在浏览器访问 http://localhost:8080 即可看到效果了。
-
-
-
-# 2、es2015(es6)
->>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
-
 ### 1、作用域知识补充
 
 ##### 全局变量的2种方式
@@ -953,15 +932,50 @@ console.log(obj2.b.c) //3,这里可以看出来是浅拷贝
 
 > 思考1、如果目标对象传入的是undefined和null将会怎样呢？
 
+```js
+//原始类型会被包装为对象
+const a = {n: 1};
+const b = {m: 1};
+const d = "abc"
+const c = Object.assign({}, a, d, n);  //{0: "a", 1: "b", 2: "c", n: 1}
 
+//当有两个包装类时
+const a = {n: 1};
+const b = {m: 1};
+const d = "abc"
+const n = "1243"
+const c = Object.assign({}, a, d, n);  //{0: "1", 1: "2", 2: "4", 3: "3", n: 1}
+
+//跟上面一个切换了下顺序
+const a = {n: 1};
+const b = {m: 1};
+const d = "abc"
+const n = "1234"
+const c = Object.assign({}, a, n, d);   //{0: "a", 1: "b", 2: "c", 3: "4", n: 1}
+```
+
+原始类型会被包装，null 和 undefined 会被忽略。 注意，只有字符串的包装对象才可能有自身可枚举属性。
 
 > 思考2、如如果原对象的参数是undefined和null将会怎样呢？
 
-
+```
+会报错： Uncaught TypeError: Cannot convert undefined or null to object
+```
 
 > 思考3、如果目标对象是个嵌套的对象，子对象的属性会被覆盖吗？
 
+```js
+const origin = {
+ msg: {
+  cc: "这是原来的"
+ }
+}
+const a = {n: 1};
+const b = {m: 1, msg: "哈哈"};
+const c = Object.assign(origin, a, b);  //{msg: "哈哈", n: 1, m: 1}
+```
 
+会被覆盖，Object.assign是浅拷贝
 
 #### 2、Object.defineProperty（es5,后面看vue源码再来研究）
 
