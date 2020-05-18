@@ -32,6 +32,7 @@
 ### ✘Date
 
 
+<<<<<<< HEAD
 # Function
 
 ### *`Function.prototype.call()`*
@@ -88,6 +89,23 @@ Function.prototype.call2 = function(context) {
 
 
 # Object
+=======
+
+# [Symbol](symbol基础知识.md)
+
+- 概述
+- Symbol基本使用
+- Symbol的常用技巧
+- 属性名的遍历
+  - `Object.getOwnPropertySymbols()`：返回该对象所有属性名为Symbols的数组
+  - `Reflect.ownKeys()`：返回对象的所有属性，包括Symbols
+- `Symbol.for()`：使用Symbol.for会在系统中将Symbol登记
+- `Symbol.keyFor()`：根据使用`Symbol.for`登记的Symbol返回描述，如果找不到返回undefined 
+
+# Set
+
+
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 # 参考链接
 

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # git删除未跟踪文件
 
 ```bash
@@ -18,6 +19,8 @@ git clean -nfd
 
 
 
+=======
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 # 显示中文路径
 
 ```
@@ -44,6 +47,7 @@ git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地
 git checkout -b release/api_management origin/release/api_management  第一个是本地分支名 第二个是远程分支
 
 
+<<<<<<< HEAD
 ```
 
 # 拉取远程master覆盖本地master
@@ -54,6 +58,18 @@ git checkout -b release/api_management origin/release/api_management  第一个�
  git reset --hard origin/master
 ```
 
+=======
+```
+
+# 拉取远程master覆盖本地master
+
+遇到一个问题，本地的master很久没有更新，突然用git pull 拉取会报错，本地git会判断你本地的文件时最新的，用git reset -- hard HEAD都不行
+
+```
+ git reset --hard origin/master
+```
+
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 
 # git merge简洁用法

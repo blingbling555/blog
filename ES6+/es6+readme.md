@@ -1,4 +1,23 @@
+<<<<<<< HEAD
 
+=======
+# 1、环境准备
+
+由于ES6-10,有些代码游览器不支持
+
+```bash
+git clone https://github.com/cucygh/es-cli.git
+cd es-cli
+npm install
+npm start
+```
+
+如果启动没有任何异常的话，直接在浏览器访问 http://localhost:8080 即可看到效果了。
+
+
+
+# 2、es2015(es6)
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 ### 1、作用域知识补充
 
@@ -1260,7 +1279,13 @@ console.log(id, status, number);
 const { SourceMapConsumer, SourceNode } = require("source-map");
 ```
 
+<<<<<<< HEAD
 ### [10、promise详解和async和await](../js/promise.md)
+=======
+### 10、promise
+
+
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 ### 11、Reflece(反射机制暂时不看)
 
@@ -1383,6 +1408,7 @@ let d = new Proxy(o, {
 })
 ```
 
+<<<<<<< HEAD
 
 
 ### [13、Symbol](../js/symbol基础知识.md)
@@ -1395,6 +1421,36 @@ let d = new Proxy(o, {
   - `Reflect.ownKeys()`：返回对象的所有属性，包括Symbols
 - `Symbol.for()`：使用Symbol.for会在系统中将Symbol登记
 - `Symbol.keyFor()`：根据使用`Symbol.for`登记的Symbol返回描述，如果找不到返回undefined 
+=======
+### 13、async_Await(es8，后面扩展)
+
+加了async属性返回一个promise
+
+```js
+async function fun1() {return 7}
+console.log(fun1()) //Promise {<resolved>: 7}
+```
+
+怎么得到返回值呢？
+
+```js
+async function fun1() {return 7}
+fun1().then((res) => {
+  console.log(res) //7
+})
+```
+
+await一个promise可以直接得到值，不用.then
+
+```js
+async function fun1() {return 7}
+
+async function fun2() {
+  let res = await fun1();
+  console.log(res) //7
+}
+```
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 
 

@@ -1,4 +1,5 @@
 # 1、flow
+<<<<<<< HEAD
 
 [Flow](https://flow.org/en/docs/getting-started/) 是 facebook 出品的 JavaScript 静态类型检查工具。Vue.js 的源码利用了 Flow 做了静态类型检查，所以了解 Flow 有助于我们阅读源码。
 
@@ -14,9 +15,22 @@ npm install -g flow-bin
 
 ```js
 //.flowconfig文件
+=======
+
+[Flow](https://flow.org/en/docs/getting-started/) 是 facebook 出品的 JavaScript 静态类型检查工具。Vue.js 的源码利用了 Flow 做了静态类型检查，所以了解 Flow 有助于我们阅读源码。
+
+### 使用flow
+
+**安装**
+
+```js
+npm install -g flow-bin
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 ```
 
+**初始化**
 
+<<<<<<< HEAD
 
 ### 类型注释
 
@@ -29,6 +43,11 @@ number表示传进来的值为整数
 括号后面的number表示：返回值为数字类型
 
 ```js
+=======
+```js
+//.flowconfig文件
+```
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 /*@flow*/
 
@@ -36,6 +55,7 @@ function add(x: number, y: number): number {
   return x + y
 }
 
+<<<<<<< HEAD
 add('Hello', 11)
 ```
 
@@ -95,8 +115,58 @@ var foo: ?string = null
 
 ![image-20200423203315938](assets/image-20200423203315938.png)
 
+=======
+### 类型注释
 
+> `/*@flow*/`这个表示需要flow去检查,如果没有就不去检查
 
+##### 数字
+
+number表示传进来的值为整数
+
+括号后面的number表示：返回值为数字类型
+
+```js
+
+/*@flow*/
+
+function add(x: number, y: number): number {
+  return x + y
+}
+
+add('Hello', 11)
+```
+
+##### 数组
+
+数组类型注释的格式是 `Array`，`T` 表示数组中每项的数据类型。在上述代码中，arr 是每项均为数字的数组。如果我们给这个数组添加了一个字符串，Flow 能检查出错误
+
+```js
+/*@flow*/
+var arr: Array<number> = [1, 2, 3]
+```
+
+##### 类和对象
+
+```js
+/*@flow*/
+
+class Bar {
+  x: string;           // x 是字符串
+  y: string | number | void;  // y 可以是字符串或者数字或者空值
+  z: boolean;
+
+  constructor(x: string, y: string | number | void) {
+    this.x = x
+    this.y = y
+    this.z = false
+  }
+}
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
+
+var bar: Bar = new Bar('hello', 4)
+
+<<<<<<< HEAD
 # 3、打草稿
 
 
@@ -115,12 +185,31 @@ function Vue (options) {
   }
   this._init(options)
 }
+=======
+var obj: { a: string, b: number, c: Array<string>, d: Bar } = {
+  a: 'hello',
+  b: 11,
+  c: ['hello', 'world'],
+  d: new Bar('hello', 3)
+}
+
+```
+
+#####  Null
+
+若想任意类型 T 可以为 null 或者 undefined，只需类似如下写成 ?T 的格式即可。
+
+```js
+/*@flow*/
+var foo: ?string = null
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 ```
 
 **_init**:定义uid，合并options到`$options`上（可以通过`$options.el`访问到el，`$options.data`访问到data）,初始生命周期，事件等一堆的初始化
 
 ##### 初始化data,props，methods
 
+<<<<<<< HEAD
 ```js
 //src\core\instance\state.js
 function initData (vm: Component) {
@@ -198,6 +287,16 @@ Vue.prototype.$mount = function (
 ```
 
 `const mount = Vue.prototype.$mount`: 在这里定义的 `import Vue from './runtime/index'`
+=======
+# 2、调试方法
+
+新建一个vue项目，找到node_modules->package.json->"module": "dist/vue.runtime.esm.js",
+
+在这个文件去打断点
+
+![image-20200423203315938](assets/image-20200423203315938.png)
+
+>>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 ![image-20200512092604442](assets/image-20200512092604442.png)
 
