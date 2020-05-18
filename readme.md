@@ -8,7 +8,6 @@
 
 ## 2、博客内容
 
-<<<<<<< HEAD
 - javascript
   - [javascript基础](js/jsREADME.md)
   - [es6+](ES6+/es6+readme.md)
@@ -20,10 +19,8 @@
     - 手写系列---bind
     - 手写系列---深拷贝
     - 手写系列---手写promise
-=======
 - [javascript](js/jsREADME.md)
 - [js原型和原型链深入理解](js/js重难点知识/原型和原型链深入理解.md)
->>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 - 游览器
 
   - ✔[DOM](游览器/DOM/readme.md)
@@ -34,7 +31,6 @@
     - [关于axios发送post请求返回400状态码【请求失败，code非200的】的问题，如何接收到json格式](./游览器/HTTP/关于axios发送post请求返回400状态码请求失败，code非200的的问题，如何接收到json格式.md)
     
   - [XSS](游览器/XSS/xss.md)
-<<<<<<< HEAD
 - [vue](vue/README.md)
 - [面试题](面试题/面试题.md)
 
@@ -53,12 +49,4 @@
 [oppo公司前端大佬博客](https://github.com/heyunjiang/Blog)
 
 ### 书籍pdf推荐
-=======
-  
-    
-- [vue](vue/README.md)
-
-- 面试题
->>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
-
 [深入浅出webpack书籍](https://webpack.wuhaolin.cn/)
