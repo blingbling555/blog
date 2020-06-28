@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # git删除未跟踪文件
 
 ```bash
@@ -19,8 +18,6 @@ git clean -nfd
 
 
 
-=======
->>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 # 显示中文路径
 
 ```
@@ -47,7 +44,7 @@ git checkout -b dev origin/dev，作用是checkout远程的dev分支，在本地
 git checkout -b release/api_management origin/release/api_management  第一个是本地分支名 第二个是远程分支
 
 
-<<<<<<< HEAD
+
 ```
 
 # 拉取远程master覆盖本地master
@@ -58,7 +55,7 @@ git checkout -b release/api_management origin/release/api_management  第一个�
  git reset --hard origin/master
 ```
 
-=======
+
 ```
 
 # 拉取远程master覆盖本地master
@@ -68,13 +65,11 @@ git checkout -b release/api_management origin/release/api_management  第一个�
 ```
  git reset --hard origin/master
 ```
-
->>>>>>> 0274e5548c22541f66545f232d76d97d017cd63c
 
 
 # git merge简洁用法
 
-```bask
+​```bask
 一、开发分支（dev）上的代码达到上线的标准后，要合并到 master 分支
 git checkout dev
 git pull

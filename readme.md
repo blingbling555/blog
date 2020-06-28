@@ -19,8 +19,6 @@
     - 手写系列---bind
     - 手写系列---深拷贝
     - 手写系列---手写promise
-- [javascript](js/jsREADME.md)
-- [js原型和原型链深入理解](js/js重难点知识/原型和原型链深入理解.md)
 - 游览器
 
   - ✔[DOM](游览器/DOM/readme.md)

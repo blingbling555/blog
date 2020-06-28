@@ -1,3 +1,15 @@
+# 公司bug
+
+```
+1、在新建需求中标题输入 <svg onload="alert(1)" /> 点击时引起xss
+2、设置->工作流状态 <a href="javascript:alert(1)">xss</a> 在需求详情会引起xss
+3、设置->自定义字段（在多选里面写入几个）在需求详情里面写入，会发现
+```
+
+
+
+
+
 # xss简介
 
 ### xss简介
@@ -55,7 +67,7 @@ XSS攻击通常指的是通过利用网页开发时留下的漏洞，通过巧�
 <img src onerror="alert(1)" />
 <svg onload="alert(1)" />
 <script>alert(1)</script>
-<a href="javascript:alert(1)">clickme</a>
+<a href="javascript:alert(1)">xss</a>
 ```
 
 ![image-20200427161823739](assets/image-20200427161823739.png)
@@ -119,8 +131,6 @@ ad">
 攻击者在url中插入xss代码,前端页面直接从url中获取xss代码并且输出到页面，导致xss代码的执行，攻击者将带有xss代码的url发送给用户，用户打开后受到xss攻击
 
 ![image-20200426212434438](assets/image-20200426212434438.png)
-
-<<<<<<< HEAD
 
 
 
