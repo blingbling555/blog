@@ -1,9 +1,41 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title></title>
+		<style type="text/css">
+			.wrap {
+				height: 400px;
+				background: yellow;
+				display: flex;
+			}
+			.child1 {
+			  background: yellow;
+			  height: 400px;
+			  width: 200px;
+			}
+			.child2 {
+			  background: pink;
+			  height: 400px;
+			  flex: 1;
+			}
+		</style>
 	</head>
 	<body>
+		<div onclick="aa">单机</div>
+		<div class="wrap">
+			<div class="child1 child"></div>
+			<div class="child2 child"></div>
+		</div>
+		<script type="text/javascript">
+			// 选择需要观察变动的节点
+			const targetNode = document.querySelector('.child2');
+			const resizeObserver = new ResizeObserver((info) => {
+				console.log('执行了', info)
+			})
+			resizeObserver.observe(targetNode)
+			
+		</script>
 	</body>
 </html>
